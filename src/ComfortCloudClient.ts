@@ -103,11 +103,12 @@ export class ComfortCloudClient {
         const groupsResponse = response.data.groupList
         const groups = _.map(groupsResponse, (element) => {
           const devices = _.map(element.deviceList, (device) => {
-            const retDevice = device.parameters as Device
-            retDevice.guid = device.deviceGuid
-            retDevice.name = device.deviceName
+            if (!device || !device.parameters) return null;
+            const retDevice = device.parameters;
+            retDevice.guid = device.deviceGuid || null;
+            retDevice.name = device.deviceName || null;
             return retDevice
-          })
+          }).filter(d => d); // filter nulls
           return new Group(element.groupId, element.groupName, devices)
         })
         return groups
