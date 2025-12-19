@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/panasonic-comfort-cloud-client.svg?style=flat-square)](https://www.npmjs.com/package/panasonic-comfort-cloud-client)
 [![build status](https://img.shields.io/travis/marc2016/panasonic-comfort-cloud-client/master.svg?style=flat-square)](https://travis-ci.org/github/marc2016/panasonic-comfort-cloud-client)
 
-Panasonic Comfort Cloud Client for node.js to control air conditioning systems over REST API. This libaray uses the same endpoints as the mobile app [Panasonic Comfort Cloud](https://play.google.com/store/apps/details?id=com.panasonic.ACCsmart).
+Panasonic Comfort Cloud Client for node.js to control air conditioning systems over REST API. This library uses the same endpoints as the mobile app [Panasonic Comfort Cloud](https://play.google.com/store/apps/details?id=com.panasonic.ACCsmart).
 
 ## Features
 
@@ -35,7 +35,7 @@ import { ComfortCloudClient } from 'panasonic-comfort-cloud-client'
 await client.login(username, password)
 ```
 
-Login to Panasonic Comfort Cloud with username and password will return an random token. This token is stored internally in a variable and sent with every request.
+Login to Panasonic Comfort Cloud with username and password will return a random token. This token is stored internally in a variable and sent with every request.
 
 ### Groups and Devices
 
@@ -47,7 +47,7 @@ import {
 } from 'panasonic-comfort-cloud-client'
 
 await client.login(username, password)
-// List of groups representing different homes, containig a list of devices
+// List of groups representing different homes, containing a list of devices
 const groups = await client.getGroups()
 // Get device by guid. Containing readable and writable properties.
 const device = await comfortCloudClient.getDevice(guid)
@@ -66,6 +66,7 @@ import {
   FanAutoMode,
   EcoMode,
   OperationMode,
+  FanSpeed,
 } from 'panasonic-comfort-cloud-client'
 
 await client.login(username, password)
@@ -84,6 +85,55 @@ device.fanSpeed = FanSpeed.Auto
 await comfortCloudClient.setParameters(device.guid, device.parameters)
 await comfortCloudClient.setDevice(device)
 ```
+
+### History Data
+
+```js
+import {
+  ComfortCloudClient,
+  DataMode
+} from 'panasonic-comfort-cloud-client'
+
+// ... login ...
+
+// Get history data for specific device (Day, Week, Month, Year)
+const history = await client.getDeviceHistoryData(device.guid, new Date(), DataMode.Day)
+```
+
+## CLI
+
+The package comes with a command line interface to control your devices or debug the API.
+
+```bash
+$ comfort-cloud-client-cli
+```
+or if you haven't installed it globally:
+```bash
+$ npx panasonic-comfort-cloud-client
+```
+Follow the interactive prompts to login and control your devices.
+
+## Changelog
+
+### 2.1.1
+*   **Feature:** Added `getDeviceHistoryData` with full type support (`HistoryDataResponse`) for better developer experience.
+*   **Feature:** CLI now prompts for App Version on startup (defaults to current known version).
+*   **Fix:** Corrected various types and examples in `README.md`.
+*   **Fix:** Improved timezone handling in history data requests.
+
+### 2.1.0
+*   **Feature:** Support for login with refresh token.
+*   **Feature:** Added `CFCGenerator`.
+
+### 2.0.x
+*   **Feature:** Added OAuth support.
+*   **Feature:** Introduced Command Line Interface (CLI).
+*   **Tech:** Upgrade to ES2022.
+*   **Fix:** Auto-refresh token fixes.
+
+### 1.1.0
+*   **Feature:** Added support for inside/outside temperature.
+*   **Feature:** Added support for nanoe mode.
 
 ## License
 
