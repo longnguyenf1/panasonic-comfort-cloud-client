@@ -11,7 +11,8 @@ import { Parameters } from './model/Parameters.js'
 import { TokenExpiredError } from './model/TokenExpiredError.js'
 import { AdapterCommunicationError } from './model/AdapterCommunicationError.js'
 import { DataMode } from './domain/enums.js'
-import { getDateForHistoryData, getFormattedTimestamp } from './domain/helper.js'
+import { getDateForHistoryData, getFormattedTimestamp, getTimezoneForHistoryData } from './domain/helper.js'
+import { HistoryDataResponse } from './model/HistoryData.js'
 import { OAuthClient } from './OAuthClient.js'
 import { getBaseRequestHeaders } from './domain/apiHelper.js'
 import { promises } from 'dns'
@@ -32,11 +33,11 @@ export class ComfortCloudClient {
   private appVersion: string | undefined = ''
 
   private clientId: string = ''
-  
+
 
   constructor(appVersion?: string) {
     this.appVersion = appVersion
-    if(!this.appVersion)
+    if (!this.appVersion)
       this.appVersion = this.defaultAppVersion
     this.axiosInstance = axios.create({
       baseURL: this.baseUrl,
@@ -50,9 +51,9 @@ export class ComfortCloudClient {
     refreshToken?: string
   ): Promise<string> {
     try {
-      if(refreshToken) {
+      if (refreshToken) {
         const token = await this.oauthClient.refreshToken(refreshToken)
-        if(token) {
+        if (token) {
           const clientId = await this.getClientId(token)
           this.clientId = clientId
 
@@ -85,7 +86,7 @@ export class ComfortCloudClient {
     )
 
     const clientId = response.data.clientId;
-    
+
     return clientId
   }
 
@@ -151,25 +152,25 @@ export class ComfortCloudClient {
     if (error instanceof AxiosError) {
       let message: string
       let code: number
-      if(error.response) {
+      if (error.response) {
         code = error.response?.data.code
         message = error.response?.data.message
         switch (code) {
           case 4100:
             throw new TokenExpiredError(
-              error.message+'\n'+message,
+              error.message + '\n' + message,
               code,
               error.status ?? -1
             )
           case 5005:
             throw new AdapterCommunicationError(
-              error.message+'\n'+message,
+              error.message + '\n' + message,
               code,
               error.status ?? -1
             )
           default:
             throw new ServiceError(
-              error.message+'\n'+message,
+              error.message + '\n' + message,
               code,
               error.status ?? -1
             )
@@ -209,14 +210,15 @@ export class ComfortCloudClient {
     return null
   }
 
-  async getDeviceHistoryData(deviceGuid: string, date: Date, dataMode: DataMode, timezone: string = '+00:00') {
-    
+  async getDeviceHistoryData(deviceGuid: string, date: Date, dataMode: DataMode, timezone?: string): Promise<HistoryDataResponse | null> {
+
     const dateString = getDateForHistoryData(date)
+    const osTimezone = timezone ? timezone : getTimezoneForHistoryData(date)
     const body = {
       deviceGuid: deviceGuid,
       dataMode: dataMode,
       date: dateString,
-      osTimezone: timezone
+      osTimezone: osTimezone
     }
 
     try {

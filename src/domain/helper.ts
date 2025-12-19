@@ -14,10 +14,10 @@ export function getDateForHistoryData(date: Date): string {
 export function getTimezoneForHistoryData(date: Date) {
   var tzo = -date.getTimezoneOffset()
   var dif = tzo >= 0 ? '+' : '-'
-  const pad = function(num: number) {
+  const pad = function (num: number) {
     return (num < 10 ? '0' : '') + num;
   }
-  return dif + pad(Math.floor(Math.abs(tzo) / 60))
+  return dif + pad(Math.floor(Math.abs(tzo) / 60)) + ':' + pad(Math.abs(tzo) % 60)
 }
 
 export function getFormattedTimestamp(): string {
