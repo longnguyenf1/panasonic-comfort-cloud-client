@@ -9,6 +9,7 @@ import password from '@inquirer/password'
 import select from '@inquirer/select'
 import { DataMode } from './domain/enums.js'
 import { OAuthClient } from './OAuthClient.js'
+import { DEFAULT_APP_VERSION } from './domain/appVersion.js'
 
 type Command = 'get-group' | 'get-device' | 'refresh-token' | 'print-tokens' | 'exit' | null
 type DeviceCommand = 'get-history' | 'print-device' | 'exit' | null
@@ -49,7 +50,7 @@ async function SelectCommand(): Promise<Command> {
   return nextCommand
 }
 
-async function SelectDevice(selectedGroup: Group) : Promise<Device|Group> {
+async function SelectDevice(selectedGroup: Group): Promise<Device | Group> {
   console.log(`Found ${selectedGroup.devices.length} devices.`)
   const choicesDevices = new Array()
   for (let device of selectedGroup.devices) {
@@ -62,7 +63,7 @@ async function SelectDevice(selectedGroup: Group) : Promise<Device|Group> {
     name: 'Print group',
     value: selectedGroup,
   })
-  const selectedObj: Device|Group = await select({
+  const selectedObj: Device | Group = await select({
     message: 'Select a device or print group',
     choices: choicesDevices,
   })
@@ -119,7 +120,7 @@ async function SelectDeviceCommand(device: Device) {
       },
     ],
   })
-  
+
   switch (nextCommand) {
     case 'get-history':
       const historyData = await client.getDeviceHistoryData(device.guid, new Date(), DataMode.Day)
@@ -134,20 +135,23 @@ async function SelectDeviceCommand(device: Device) {
 }
 
 async function start() {
-  
+
+
+  const versionInput = await input({ message: `App Version (default: ${DEFAULT_APP_VERSION})` })
+  const appVersion = versionInput ? versionInput : DEFAULT_APP_VERSION
 
   const answers = {
     username: await input({ message: 'Username' }),
     password: await password({ message: 'Password' }),
   }
 
-  client = new ComfortCloudClient()
+  client = new ComfortCloudClient(appVersion)
   await client.login(answers.username, answers.password)
   console.log('Login successful.')
 
-  
+
   let nextCommand: Command = null
-  while(nextCommand != 'exit') {
+  while (nextCommand != 'exit') {
     nextCommand = await SelectCommand()
     switch (nextCommand) {
       case 'get-device':
@@ -156,7 +160,7 @@ async function start() {
       case 'get-group':
         const selectedGroup = await SelectGroup()
         const deviceOrGroup = await SelectDevice(selectedGroup)
-        if(deviceOrGroup instanceof Group)
+        if (deviceOrGroup instanceof Group)
           console.log(JSON.stringify(deviceOrGroup, null, 2))
         else
           await SelectDeviceCommand(deviceOrGroup)
@@ -164,7 +168,7 @@ async function start() {
       case 'print-tokens':
         console.log(`OAuth token: ${client.oauthClient.token}`)
         console.log(`OAuth refresh token: ${client.oauthClient.tokenRefresh}`)
-        break 
+        break
       case 'refresh-token':
         await client.oauthClient.refreshToken()
         console.log('Token refresh was successful.')
