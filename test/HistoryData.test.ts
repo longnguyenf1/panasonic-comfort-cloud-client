@@ -2,6 +2,7 @@
 import { ComfortCloudClient } from '../src/ComfortCloudClient';
 import { DataMode } from '../src/domain/enums';
 import axios from 'axios';
+import { mockHistoryResponse } from './fixtures.js';
 
 // Mock axios
 jest.mock('axios');
@@ -30,43 +31,8 @@ describe('ComfortCloudClient - getDeviceHistoryData', () => {
         const testDate = new Date('2023-10-27T10:00:00.000+02:00'); // Oct 27, 2023, 10 AM, GMT+2
         const deviceGuid = 'test-guid';
         const expectedDateString = '20231027';
-        // We expect the helper to calculate the timezone offset from the date object
-        // NOTE: The Date object in JS keeps the local timezone of the system running the test usually, 
-        // or UTC if created with 'Z'.
-        // To properly test the "timezone of the date", we rely on what getTimezoneForHistoryData extracts.
-        // If we want to verify the formatted timezone string, let's just check what the helper returns for this date.
-        // Actually, let's trust our helper produces correct output for the system running the test, 
-        // OR better: Spy on the helper? No, that's internal.
-        // We will assert that the 'osTimezone' sent in body matches the pattern '±HH:MM'.
 
-        const mockResponseData = {
-            "temperatureUnit": 0,
-            "deviceRegisterTime": "20200410",
-            "historyDataList": [
-                {
-                    "dataTime": "20251219 00",
-                    "averageSettingTemp": -255,
-                    "averageInsideTemp": -255,
-                    "averageOutsideTemp": -255,
-                    "consumption": 0.04,
-                    "cost": -255,
-                    "heatConsumptionRate": 0,
-                    "coolConsumptionRate": 0
-                },
-                {
-                    "dataTime": "20251219 07",
-                    "averageSettingTemp": 18,
-                    "averageInsideTemp": -255,
-                    "averageOutsideTemp": 12,
-                    "consumption": 0.30800000000000005,
-                    "cost": -255,
-                    "heatConsumptionRate": 0.7759740259740259,
-                    "coolConsumptionRate": 0
-                }
-            ]
-        };
-
-        mockedAxios.post.mockResolvedValue({ status: 200, data: mockResponseData });
+        mockedAxios.post.mockResolvedValue({ status: 200, data: mockHistoryResponse });
 
         const result = await client.getDeviceHistoryData(deviceGuid, testDate, DataMode.Day);
 
