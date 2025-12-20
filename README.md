@@ -1,7 +1,8 @@
 # panasonic-comfort-cloud-client
 
 [![npm version](https://img.shields.io/npm/v/panasonic-comfort-cloud-client.svg?style=flat-square)](https://www.npmjs.com/package/panasonic-comfort-cloud-client)
-[![build status](https://img.shields.io/travis/marc2016/panasonic-comfort-cloud-client/master.svg?style=flat-square)](https://travis-ci.org/github/marc2016/panasonic-comfort-cloud-client)
+[![Node.js CI](https://github.com/marc2016/panasonic-comfort-cloud-client/actions/workflows/nodejs.yml/badge.svg)](https://github.com/marc2016/panasonic-comfort-cloud-client/actions/workflows/nodejs.yml)
+
 
 Panasonic Comfort Cloud Client for node.js to control air conditioning systems over REST API. This library uses the same endpoints as the mobile app [Panasonic Comfort Cloud](https://play.google.com/store/apps/details?id=com.panasonic.ACCsmart).
 
