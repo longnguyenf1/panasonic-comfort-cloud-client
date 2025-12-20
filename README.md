@@ -116,6 +116,9 @@ Follow the interactive prompts to login and control your devices.
 
 ## Changelog
 
+### 2.1.2
+*   **Fix:** Added check to filter out invalid devices (e.g. Heat Pumps) that do not provide parameters, preventing crashes (PR #22).
+
 ### 2.1.1
 *   **Feature:** Added `getDeviceHistoryData` with full type support (`HistoryDataResponse`) for better developer experience.
 *   **Feature:** CLI now prompts for App Version on startup (defaults to current known version).
