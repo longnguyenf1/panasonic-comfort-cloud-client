@@ -120,6 +120,7 @@ Follow the interactive prompts to login and control your devices.
 *   **Feature:** CLI now prompts for App Version on startup (defaults to current known version).
 *   **Fix:** Corrected various types and examples in `README.md`.
 *   **Fix:** Improved timezone handling in history data requests.
+*   **Internal:** Major test refactoring: Switched to full mocking (removed dependency on `auth_data.json`), extracted fixtures, and added realistic data scenarios.
 
 ### 2.1.0
 *   **Feature:** Support for login with refresh token.
