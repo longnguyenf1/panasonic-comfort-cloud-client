@@ -114,6 +114,27 @@ $ npx panasonic-comfort-cloud-client
 ```
 Follow the interactive prompts to login and control your devices.
 
+### Usage Example
+
+```bash
+? App Version (default: 1.20.0) 1.21.0
+? Username myemail@example.com
+? Password [hidden]
+Login successful.
+? Select a package manager Get groups
+Found 1 groups.
+? Select a group My Home
+Found 2 devices.
+? Select a device or print group Living Room AC
+? Select command for device Living Room AC. Get history
+? Select data mode Day
+{
+  "energyConsumptionHeating": 0,
+  "energyConsumptionCooling": 2.5,
+  ...
+}
+```
+
 ## Changelog
 
 ### 2.1.3
