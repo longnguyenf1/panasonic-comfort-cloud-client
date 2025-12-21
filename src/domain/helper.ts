@@ -4,18 +4,18 @@ export function padTo2Digits(num: number): string {
   return num.toString().padStart(2, '0');
 }
 
-export function getDateForHistoryData(date: Date, dataMode: DataMode): string {
-  if (dataMode === DataMode.Month) {
-    return [
-      date.getFullYear(),
-      padTo2Digits(date.getMonth() + 1),
-    ].join('')
-  }
+export function getDateForHistoryData(date: Date, dataMode: DataMode = DataMode.Day): string {
+  const year = date.getFullYear()
+  const month = padTo2Digits(date.getMonth() + 1)
+  const day = padTo2Digits(date.getDate())
+
+
+
   return (
     [
-      date.getFullYear(),
-      padTo2Digits(date.getMonth() + 1),
-      padTo2Digits(date.getDate()),
+      year,
+      month,
+      day,
     ].join(''))
 }
 
