@@ -3,6 +3,7 @@
 import { ComfortCloudClient } from './ComfortCloudClient.js'
 import { Group } from './model/Group.js'
 import { Device } from './model/Device.js'
+import { ServiceError } from './model/ServiceError.js'
 
 import { input, useEffect } from '@inquirer/prompts'
 import password from '@inquirer/password'
@@ -132,14 +133,8 @@ async function SelectDeviceCommand(device: Device) {
           { name: 'Year', value: DataMode.Year },
         ],
       })
-      try {
-        const historyData = await client.getDeviceHistoryData(device.guid, new Date(), dataMode)
-        console.log(JSON.stringify(historyData, null, 2))
-      } catch (error: any) {
-        console.error('Error:', error.message)
-        const dataModeName = Object.keys(DataMode).find(key => DataMode[key as keyof typeof DataMode] === dataMode);
-        console.error(`Maybe the selected data mode '${dataModeName}' is not supported by the device.`)
-      }
+      const historyData = await client.getDeviceHistoryData(device.guid, new Date(), dataMode)
+      console.log(JSON.stringify(historyData, null, 2))
       break;
     case 'print-device':
       console.log(JSON.stringify(device, null, 2))
@@ -168,28 +163,40 @@ async function start() {
   let nextCommand: Command = null
   while (nextCommand != 'exit') {
     nextCommand = await SelectCommand()
-    switch (nextCommand) {
-      case 'get-device':
-        await GetDevice()
-        break
-      case 'get-group':
-        const selectedGroup = await SelectGroup()
-        const deviceOrGroup = await SelectDevice(selectedGroup)
-        if (deviceOrGroup instanceof Group)
-          console.log(JSON.stringify(deviceOrGroup, null, 2))
-        else
-          await SelectDeviceCommand(deviceOrGroup)
-        break
-      case 'print-tokens':
-        console.log(`OAuth token: ${client.oauthClient.token}`)
-        console.log(`OAuth refresh token: ${client.oauthClient.tokenRefresh}`)
-        break
-      case 'refresh-token':
-        await client.oauthClient.refreshToken()
-        console.log('Token refresh was successful.')
-        break
-      default:
-        break
+    try {
+      switch (nextCommand) {
+        case 'get-device':
+          await GetDevice()
+          break
+        case 'get-group':
+          const selectedGroup = await SelectGroup()
+          const deviceOrGroup = await SelectDevice(selectedGroup)
+          if (deviceOrGroup instanceof Group)
+            console.log(JSON.stringify(deviceOrGroup, null, 2))
+          else
+            await SelectDeviceCommand(deviceOrGroup)
+          break
+        case 'print-tokens':
+          console.log(`OAuth token: ${client.oauthClient.token}`)
+          console.log(`OAuth refresh token: ${client.oauthClient.tokenRefresh}`)
+          break
+        case 'refresh-token':
+          await client.oauthClient.refreshToken()
+          console.log('Token refresh was successful.')
+          break
+        default:
+          break
+      }
+    } catch (error: any) {
+      console.error('An error occurred:', error)
+      if (error instanceof ServiceError && error.details) {
+        console.error('Service Error Details:', JSON.stringify(error.details, null, 2))
+      }
+      if (error.response) {
+        console.error('Response Data:', error.response.data)
+        console.error('Response Status:', error.response.status)
+        console.error('Response Headers:', error.response.headers)
+      }
     }
   }
 }

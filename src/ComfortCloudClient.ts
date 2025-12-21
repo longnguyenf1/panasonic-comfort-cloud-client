@@ -173,7 +173,8 @@ export class ComfortCloudClient {
             throw new ServiceError(
               error.message + '\n' + message,
               code,
-              error.status ?? -1
+              error.status ?? -1,
+              error.response?.data
             )
             break;
         }
