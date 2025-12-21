@@ -123,7 +123,16 @@ async function SelectDeviceCommand(device: Device) {
 
   switch (nextCommand) {
     case 'get-history':
-      const historyData = await client.getDeviceHistoryData(device.guid, new Date(), DataMode.Day)
+      const dataMode: DataMode = await select({
+        message: 'Select data mode',
+        choices: [
+          { name: 'Day', value: DataMode.Day },
+          { name: 'Week', value: DataMode.Week },
+          { name: 'Month', value: DataMode.Month },
+          { name: 'Year', value: DataMode.Year },
+        ],
+      })
+      const historyData = await client.getDeviceHistoryData(device.guid, new Date(), dataMode)
       console.log(JSON.stringify(historyData, null, 2))
       break;
     case 'print-device':

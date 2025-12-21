@@ -116,6 +116,9 @@ Follow the interactive prompts to login and control your devices.
 
 ## Changelog
 
+### 2.1.3
+*   **Feature:** Allow selecting DataMode (Day, Week, Month, Year) in CLI history command.
+
 ### 2.1.2
 *   **Fix:** Added check to filter out invalid devices (e.g. Heat Pumps) that do not provide parameters, preventing crashes (PR #22).
 
