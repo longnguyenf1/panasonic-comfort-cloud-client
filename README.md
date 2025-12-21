@@ -137,6 +137,11 @@ Found 2 devices.
 
 ## Changelog
 
+### 2.1.4
+*   **Fix:** Corrected date format for `Month` history data requests.
+*   **Fix:** Explicitly block `Year` and `Week` history data requests (as they seem unsupported by API) to prevent crashes.
+*   **Fix:** Added better error handling in CLI for unsupported history modes.
+
 ### 2.1.3
 *   **Feature:** Allow selecting DataMode (Day, Week, Month, Year) in CLI history command.
 

@@ -212,8 +212,11 @@ export class ComfortCloudClient {
   }
 
   async getDeviceHistoryData(deviceGuid: string, date: Date, dataMode: DataMode, timezone?: string): Promise<HistoryDataResponse | null> {
+    if (dataMode === DataMode.Year || dataMode === DataMode.Week) {
+      throw new ServiceError('DataMode Year and Week are currently not supported', -1, -1)
+    }
 
-    const dateString = getDateForHistoryData(date)
+    const dateString = getDateForHistoryData(date, dataMode)
     const osTimezone = timezone ? timezone : getTimezoneForHistoryData(date)
     const body = {
       deviceGuid: deviceGuid,

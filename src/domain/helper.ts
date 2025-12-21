@@ -1,8 +1,16 @@
+import { DataMode } from './enums.js'
+
 export function padTo2Digits(num: number): string {
   return num.toString().padStart(2, '0');
 }
 
-export function getDateForHistoryData(date: Date): string {
+export function getDateForHistoryData(date: Date, dataMode: DataMode): string {
+  if (dataMode === DataMode.Month) {
+    return [
+      date.getFullYear(),
+      padTo2Digits(date.getMonth() + 1),
+    ].join('')
+  }
   return (
     [
       date.getFullYear(),

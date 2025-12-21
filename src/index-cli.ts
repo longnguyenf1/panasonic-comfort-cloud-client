@@ -132,8 +132,14 @@ async function SelectDeviceCommand(device: Device) {
           { name: 'Year', value: DataMode.Year },
         ],
       })
-      const historyData = await client.getDeviceHistoryData(device.guid, new Date(), dataMode)
-      console.log(JSON.stringify(historyData, null, 2))
+      try {
+        const historyData = await client.getDeviceHistoryData(device.guid, new Date(), dataMode)
+        console.log(JSON.stringify(historyData, null, 2))
+      } catch (error: any) {
+        console.error('Error:', error.message)
+        const dataModeName = Object.keys(DataMode).find(key => DataMode[key as keyof typeof DataMode] === dataMode);
+        console.error(`Maybe the selected data mode '${dataModeName}' is not supported by the device.`)
+      }
       break;
     case 'print-device':
       console.log(JSON.stringify(device, null, 2))

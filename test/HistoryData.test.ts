@@ -66,4 +66,27 @@ describe('ComfortCloudClient - getDeviceHistoryData', () => {
         const [url, body] = mockedAxios.post.mock.calls[0];
         expect((body as any).osTimezone).toBe(customTimezone);
     });
+
+    it('should throw error for DataMode.Year', async () => {
+        const testDate = new Date('2023-10-27T10:00:00.000+02:00');
+        const deviceGuid = 'test-guid';
+
+        await expect(client.getDeviceHistoryData(deviceGuid, testDate, DataMode.Year))
+            .rejects
+            .toThrow('DataMode Year and Week are currently not supported');
+    });
+
+    it('should format date correctly for DataMode.Month', async () => {
+        const testDate = new Date('2023-10-27T10:00:00.000+02:00');
+        const deviceGuid = 'test-guid';
+        const expectedDateString = '202310'; // YearMonth
+
+        mockedAxios.post.mockResolvedValue({ status: 200, data: mockHistoryResponse });
+
+        await client.getDeviceHistoryData(deviceGuid, testDate, DataMode.Month);
+
+        const [url, body] = mockedAxios.post.mock.calls[0];
+        expect((body as any).date).toBe(expectedDateString);
+        expect((body as any).dataMode).toBe(DataMode.Month);
+    });
 });
