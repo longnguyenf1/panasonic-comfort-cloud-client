@@ -6,7 +6,7 @@
   "types": "./dist/src/index.d.ts",
   "scripts": {
     "test": "jest --config jest.json",
-    "build": "tsc",
+    "build": "tsc --output public",
     "setup": "npm install"
   },
   "bin": {
